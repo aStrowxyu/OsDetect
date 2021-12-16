@@ -38,7 +38,7 @@ def get_os_set_from_ip_parameters(df, ttl):
 	:param ttl: int - Time To Live field of an IP layer
 	:return: set - Set of optional Operating Systems
 	"""
- 	ip_os_set = ALL_OS
+	ip_os_set = ALL_OS
 	# DF
 	df_os_set = get_os_set_from_df(df)
 	ip_os_set.intersection_update(df_os_set)

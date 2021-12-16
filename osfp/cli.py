@@ -6,18 +6,24 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.
 
 from osfp.lib.log import logger
 from osfp.lib.methods import ALL_OS, test_os_using_icmp, test_os_using_tcp, smb_scan_os
+from osfp.lib.survival_detect import SurvialDetect
 
 
-def main(host, methods=["icmp", "tcp", "smb"]):
+def main(host):
     verbose = False
     result_set = ALL_OS
+    logger.info(f"开始对目标: {host} 进行存活探测")
+    is_alive, is_ping = SurvialDetect().run(host)
+    if not is_alive:
+        logger.info(f"目标：{host} 可能没有存活，检测结束")
 
     logger.info(f"开始对目标: {host} 进行操作系统识别")
 
-    logger.info("开始使用Ping检测操作系统类型")
-    icmp_os_set = test_os_using_icmp(host, verbose=verbose)
-    result_set.intersection(icmp_os_set)
-    logger.info(f"Ping检测结果为：{'、'.join(result_set)}")
+    if is_ping:
+        logger.info("开始使用Ping检测操作系统类型")
+        icmp_os_set = test_os_using_icmp(host, verbose=verbose)
+        result_set.intersection(icmp_os_set)
+        logger.info(f"Ping检测结果为：{'、'.join(result_set)}")
 
     if len(result_set) > 2:
         logger.info("开始使用TCP端口检测操作系统类型")
@@ -51,17 +57,19 @@ def main(host, methods=["icmp", "tcp", "smb"]):
         result_set = "Windows"
 
     logger.info(f"操作系统最终检测结果为：{result_set}")
+
     return result_set
 
 
 if __name__ == '__main__':
-    # print(main("192.168.1.135"))
+    # main("192.168.1.135")
     # print(main("192.168.0.161"))
     # print(main("192.168.0.87"))
-    # print(main("192.168.1.51"))
+    print(main("192.168.1.51"))
     # print(main("10.10.16.124"))
     # print(main("10.10.16.72"))
     # main("10.10.16.124")
     # import sys
     # main(sys.argv[1])
-    main("52.18.1.159")
+    # main("52.18.1.159")
+    main("10.10.16.96")
