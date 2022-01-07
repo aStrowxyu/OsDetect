@@ -5,13 +5,14 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
 from osfp.lib.log import logger
-from osfp.lib.methods import ALL_OS, test_os_using_icmp, test_os_using_tcp, smb_scan_os
+from osfp.lib.methods import test_os_using_icmp, test_os_using_tcp, smb_scan_os
 from osfp.lib.survival_detect import SurvialDetect
 
 
 def main(host):
     verbose = False
-    result_set = ALL_OS
+    result_set = {"Linux", "FreeBSD", "Windows XP", "Windows 7", "Windows 10", "Symbian",
+                  "Palm OS", "Centos", "Ubuntu", "Debin"}
     logger.info(f"开始对目标: {host} 进行存活探测")
     is_alive, is_ping = SurvialDetect().run(host)
     if not is_alive:
@@ -22,7 +23,7 @@ def main(host):
     if is_ping:
         logger.info("开始使用Ping检测操作系统类型")
         icmp_os_set = test_os_using_icmp(host, verbose=verbose)
-        result_set.intersection(icmp_os_set)
+        result_set.intersection_update(icmp_os_set)
         logger.info(f"Ping检测结果为：{'、'.join(result_set)}")
 
     if len(result_set) > 2:
@@ -46,7 +47,7 @@ def main(host):
 
     if len(result_set) == 1:
         result_set = list(result_set)[0]
-    elif len(result_set) > 2:
+    elif len(result_set) > 1:
         for o in result_set:
             if "win" in o.lower():
                 result_set = "Windows"
@@ -62,14 +63,12 @@ def main(host):
 
 
 if __name__ == '__main__':
-    # main("192.168.1.135")
-    # print(main("192.168.0.161"))
-    # print(main("192.168.0.87"))
-    print(main("192.168.1.51"))
-    # print(main("10.10.16.124"))
-    # print(main("10.10.16.72"))
-    # main("10.10.16.124")
-    # import sys
-    # main(sys.argv[1])
-    # main("52.18.1.159")
-    main("10.10.16.96")
+    import argparse
+
+    parser = argparse.ArgumentParser(prog="OsDetect", description="识别操作系统指纹")
+    parser.add_argument('-t', '--target', help='Detected target (target: ip)')
+    example = parser.add_argument_group("examples")
+    example.add_argument(action='store_false',
+                         dest="python3 cli.py -t 192.168.1.1")
+    args = parser.parse_args()
+    main(args.target)

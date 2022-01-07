@@ -26,7 +26,7 @@ class SurvialDetect(object):
         """通过扫描端口判断主机是否存活"""
         is_alive = False
 
-        tcp_ports = [22, 80, 443, 135, 139, 445, 3306, 6379, 3389]
+        tcp_ports = [22, 80, 443, 135, 139, 445, 1433, 1521, 3306, 3389, 6379, 7001, 8080]
         socket.setdefaulttimeout(2)
         for port in tcp_ports:
             try:

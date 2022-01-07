@@ -3,7 +3,7 @@ logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 import scapy.all as scapy
 from osfp.lib.db import *
 
-COMMON_TCP_PORTS = [22, 80, 443, 445, 8080, 7001, 135, 139, 3306, 6379, 3389]
+COMMON_TCP_PORTS = [22, 80, 443, 135, 139, 445, 1433, 1521, 3306, 3389, 6379, 7001, 8080]
 MAX_RTT = 2
 RESEND_COUNT = 2
 
