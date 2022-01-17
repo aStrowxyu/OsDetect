@@ -2,17 +2,17 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import copy
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
 from osfp.lib.log import logger
-from osfp.lib.methods import test_os_using_icmp, test_os_using_tcp, smb_scan_os
+from osfp.lib.methods import test_os_using_icmp, test_os_using_tcp, smb_scan_os, ALL_OS
 from osfp.lib.survival_detect import SurvialDetect
 
 
 def main(host):
     verbose = False
-    result_set = {"Linux", "FreeBSD", "Windows XP", "Windows 7", "Windows 10", "Symbian",
-                  "Palm OS", "Centos", "Ubuntu", "Debin"}
+    result_set = copy.deepcopy(ALL_OS)
     logger.info(f"开始对目标: {host} 进行存活探测")
     is_alive, is_ping = SurvialDetect().run(host)
     if not is_alive:
