@@ -12,14 +12,14 @@ def test_os_using_icmp(dst_ip, verbose=False):
 	:param verbose: bool - print relevant information during the process
 	:return: set - Set of optional Operating Systems of the given IP
 	"""
-	result_set = ALL_OS
+	result_set = copy.deepcopy(ALL_OS)
 	if verbose:
 		print("[ICMP test] OS options are: {0}".format(result_set))
 
 	icmp_reply = get_icmp_reply(dst_ip)
 	if icmp_reply is None:
 		logger.info("目的主机没有响应icmp请求。无法使用icmp缩小操作系统选项。")
-		return ALL_OS
+		return copy.deepcopy(ALL_OS)
 
 	# IP
 	ip_layer = icmp_reply.getlayer("IP")
@@ -40,14 +40,14 @@ def test_os_using_tcp(dst_ip, verbose=False):
 	:param bool - verbose: print relevant information during the process
 	:return: set - Set of optional Operating Systems of the given IP
 	"""
-	result_set = ALL_OS
+	result_set = copy.deepcopy(ALL_OS)
 	if verbose:
 		print("[TCP test] OS options are: {0}".format(result_set))
 
 	syn_ack = get_syn_ack(dst_ip)
 	if syn_ack is None:
 		logger.info("找不到打开的TCP端口。无法使用TCP缩小操作系统选项。")
-		return ALL_OS
+		return copy.deepcopy(ALL_OS)
 
 	# IP
 	ip_layer = syn_ack.getlayer("IP")

@@ -1,3 +1,5 @@
+import copy
+
 from osfp.lib.config import ALL_OS, OS_DB
 
 
@@ -38,7 +40,7 @@ def get_os_set_from_ip_parameters(df, ttl):
 	:param ttl: int - Time To Live field of an IP layer
 	:return: set - Set of optional Operating Systems
 	"""
-	ip_os_set = ALL_OS
+	ip_os_set = copy.deepcopy(ALL_OS)
 	# DF
 	df_os_set = get_os_set_from_df(df)
 	ip_os_set.intersection_update(df_os_set)
@@ -69,7 +71,7 @@ def get_os_set_from_mss(mss):
 	"""
 	if mss in OS_DB["MSS"]:
 		return OS_DB["MSS"][mss]
-	return ALL_OS
+	return copy.deepcopy(ALL_OS)
 
 
 def get_os_set_from_tcp_parameters(win_size, mss):
@@ -80,11 +82,12 @@ def get_os_set_from_tcp_parameters(win_size, mss):
 	:param mss: int - Max Segment Size field of a TCP layer
 	:return: set - Set of optional Operating Systems
 	"""
-	tcp_os_set = ALL_OS
+	tcp_os_set = copy.deepcopy(ALL_OS)
 	# Window Size
 	win_size_os_set = get_os_set_from_win_size(win_size)
 	tcp_os_set.intersection_update(win_size_os_set)
 	# Max Segment Size
 	mss_os_set = get_os_set_from_mss(mss)
 	tcp_os_set.intersection_update(mss_os_set)
+
 	return tcp_os_set
